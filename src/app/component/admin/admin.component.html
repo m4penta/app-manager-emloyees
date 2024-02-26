@@ -1,1 +1,201 @@
-<h1>Quản lí quản trị viên</h1>
+<div class="box">
+  <div class="head m-3">
+    <h1>Quản lí quản trị viên</h1>
+  </div>
+  <div class="button m-3 surface-50">
+    <p-button
+      class="m-2 max-w-5rem min-w-5rem"
+      (click)="showDialog('create')"
+      label="Thêm"
+    ></p-button>
+    <p-button
+      label="Xóa"
+      class="max-w-5rem min-w-5rem"
+      (onClick)="onCheckboxChange(selectedAdmin)"
+      severity="danger"
+    ></p-button>
+  </div>
+  <div class="table m-3">
+    <p-table
+      #dt
+      [value]="admins"
+      [globalFilterFields]="['name', 'username']"
+      [(selection)]="selectedAdmin"
+      [rows]="10"
+      [paginator]="true"
+      [rowsPerPageOptions]="[10, 25, 50]"
+      [showCurrentPageReport]="true"
+      currentPageReportTemplate="Hiện {first} đến  {last}  của tổng {totalRecords} bản ghi"
+    >
+      <ng-template pTemplate="caption">
+        <div class="flex">
+          <span class="p-input-icon-left ml-auto">
+            <i class="pi pi-search"></i>
+            <input
+              pInputText
+              type="text"
+              (input)="dt.filterGlobal($any($event.target).value, 'contains')"
+              placeholder="Nhập vào"
+            />
+          </span>
+        </div>
+      </ng-template>
+      <ng-template pTemplate="header">
+        <tr>
+          <th style="width: 3rem"></th>
+          <th>Tên quản trị viên</th>
+          <th>Username</th>
+          <th style="width: 12rem">Thao tác</th>
+        </tr>
+        <tr>
+          <th>
+            <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+          </th>
+          <th>
+            <p-columnFilter type="text" field="name"></p-columnFilter>
+          </th>
+          <th>
+            <p-columnFilter type="text" field="username"></p-columnFilter>
+          </th>
+          <th></th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-admin>
+        <tr>
+          <td>
+            <p-tableCheckbox [value]="admin"></p-tableCheckbox>
+          </td>
+          <td>{{ admin.name }}</td>
+          <td>{{ admin.username }}</td>
+          <td class="flex flex-wrap">
+            <button
+              pButton
+              type="button"
+              (click)="viewAdmin(admin)"
+              class="p-button-primary col m-1"
+              icon="pi pi-eye"
+            ></button>
+            <button
+              pButton
+              type="button"
+              (click)="UpdateAdmin(admin)"
+              class="p-button-secondary col m-1"
+              icon="pi pi-cog"
+            ></button>
+            <button
+              pButton
+              type="button"
+              (click)="deleteAdmin(admin)"
+              class="p-button-danger col m-1"
+              icon="pi pi-trash"
+            ></button>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+</div>
+
+<!-- dialog thêm mới admin -->
+<p-dialog
+  header="Thêm mới quản trị viên"
+  [(visible)]="createVisible"
+  [modal]="true"
+  [draggable]="false"
+  [resizable]="false"
+>
+  <div class="formgrid grid">
+    <form [formGroup]="createForm" (ngSubmit)="onSubmit()">
+      <div class="formgrid grid">
+        <div class="field col">
+            <label for="firstname2">Username</label>
+            <input id="firstname2" type="text"
+            class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full"
+            formControlName="username"
+            >
+            <div *ngIf="createForm.get('username')?.invalid && (createForm.get('username')?.dirty || createForm.get('username')?.touched)" class="text-danger">Username không được để trống</div>
+        </div>
+        <div class="field col">
+            <label for="lastname2">Mật khẩu</label>
+            <input id="lastname2" type="text"
+            class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full"
+            formControlName="password"
+            >
+            <div *ngIf="createForm.get('password')?.invalid && (createForm.get('password')?.dirty || createForm.get('password')?.touched)" class="text-danger">Mật khẩu không được để trống</div>
+        </div>
+    </div>
+    <div class="formgrid grid">
+      <div class="field col">
+          <label for="firstname2">Tên quản trị viên</label>
+          <input id="firstname2" type="text"
+           class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full"
+           formControlName="name"
+           >
+           <div *ngIf="createForm.get('name')?.invalid && (createForm.get('name')?.dirty || createForm.get('name')?.touched)" class="text-danger">Tên quản trị viên không được để trống</div>
+      </div>
+  </div>
+  <div class="flex flex-row-reverse flex-wrap gap-2">
+    <p-button
+      label="Hủy"
+      (onClick)="closeModal('create')"
+      severity="danger"
+    ></p-button>
+    <p-button
+    type="sub"
+    label="Thêm"
+    ></p-button>
+
+  </div>
+    </form>
+  </div>
+</p-dialog>
+<!-- dialog hiển thị admin -->
+<p-dialog
+  header="Xem quản trị viên"
+  [(visible)]="viewVisible"
+  [modal]="true"
+  [draggable]="false"
+  [resizable]="false"
+>
+ <div class="formgrid grid">
+    <form [formGroup]="viewForm">
+      <div class="formgrid grid">
+        <div class="field col">
+            <label for="firstname2">Username</label>
+            <input id="firstname2" type="text"
+            class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full"
+            formControlName="username"
+            >
+
+        </div>
+        <div class="field col">
+            <label for="lastname2">Mật khẩu</label>
+            <input id="lastname2" type="text"
+            class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full"
+            formControlName="password"
+            >
+
+        </div>
+    </div>
+    <div class="formgrid grid">
+      <div class="field col">
+          <label for="firstname2">Tên quản trị viên</label>
+          <input id="firstname2" type="text"
+           class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full"
+           formControlName="name"
+           >
+
+      </div>
+  </div>
+  <div class="flex flex-row-reverse flex-wrap gap-2">
+    <p-button
+      label="Hủy"
+      (onClick)="closeModal('view')"
+      severity="danger"
+    ></p-button>
+
+
+  </div>
+    </form>
+  </div>
+</p-dialog>
