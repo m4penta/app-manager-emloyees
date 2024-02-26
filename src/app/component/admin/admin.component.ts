@@ -56,6 +56,15 @@ export class AdminComponent implements OnInit {
     password: '',
     name: ''
   };
+  //update
+  updateVisible: boolean = false;
+  updateForm!: FormGroup;
+  updateID!: number;
+  selectUpdate: any = {
+    username: '',
+    password: '',
+    name: ''
+  };
   constructor(
     private _adminServices: AdminService ,
     private formBuilder: FormBuilder
@@ -76,6 +85,11 @@ export class AdminComponent implements OnInit {
       password: [{ value: this.selectAd.password, disabled: true }],
       name: [{ value: this.selectAd.name, disabled: true }]
     })
+    this.updateForm = this.formBuilder.group({
+      username: [this.selectUpdate.username, [Validators.required]],
+      password: [this.selectUpdate.password, [Validators.required]],
+      name: [this.selectUpdate.name, [Validators.required]]
+    });
   }
   onSubmit(): void {
     if (this.createForm.valid) {
@@ -94,6 +108,20 @@ export class AdminComponent implements OnInit {
       this.closeModal('create')
     }
   }
+  onUpdate():void{
+    if(this.updateForm.valid){
+      const formData = this.updateForm.value
+      this._adminServices.updateAdmin(this.updateID,formData).subscribe({
+        next: (res) =>{
+          console.log('admin đã được tạo mới:', res);
+          this.closeModal('update')
+          this.getAdmin()
+        },
+        error:(err) => console.error('đã xảy ra lỗi khi cập nhập admin', err)
+      })
+      this.closeModal('update')
+    }
+  }
   getAdmin(): void {
     this._adminServices.getAllAdmins()
       .subscribe((x: any) => {
@@ -101,15 +129,7 @@ export class AdminComponent implements OnInit {
 
       });
   }
-  showDialog(name: string) {
-    if (name == 'create'){
-      this.createVisible = true;
-    }else if(name == 'view'){
-      this.viewVisible = true
 
-    }
-
-}
 
   onCheckboxChange(e:any) {
     const ids = e.map((i:any) => i.id);
@@ -129,14 +149,39 @@ export class AdminComponent implements OnInit {
 
   }
   UpdateAdmin(data:any){
-    console.log(data.id)
+    const id: number = data.id
+    this.updateID = data.id
+    this._adminServices.getAdminById(id).subscribe({
+      next: (admin: any) =>{
+      this.updateForm.patchValue(admin)
+      this.showDialog('update')
+    },
+    error: (error: any)=> {
+      console.error('Đã xảy ra lỗi:', error);
+    }
+  })
+  }
+  showDialog(name: string) {
+    if (name == 'create'){
+      this.createVisible = true;
+    }else if(name == 'view'){
+      this.viewVisible = true
+
+    }else if(name == 'update'){
+      this.updateVisible = true
+    }
+
   }
   closeModal(name: string){
     if (name == 'create'){
       this.createVisible = false;
     }else if(name == 'view'){
       this.viewVisible = false
+    }else if(name == 'update'){
+      this.updateVisible = false
     }
+
+
 
   }
 
