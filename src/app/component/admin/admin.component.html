@@ -199,3 +199,56 @@
     </form>
   </div>
 </p-dialog>
+<!-- dialog cập nhập admin -->
+<p-dialog
+  header="Xem quản trị viên"
+  [(visible)]="updateVisible"
+  [modal]="true"
+  [draggable]="false"
+  [resizable]="false"
+>
+ <div class="formgrid grid">
+  <form [formGroup]="updateForm" (ngSubmit)="onUpdate()">
+    <div class="formgrid grid">
+      <div class="field col">
+          <label for="firstname2">Username</label>
+          <input id="firstname2" type="text"
+          class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full"
+          formControlName="username"
+          >
+          <div *ngIf="updateForm.get('username')?.invalid && (updateForm.get('username')?.dirty || updateForm.get('username')?.touched)" class="text-danger">Username không được để trống</div>
+      </div>
+      <div class="field col">
+          <label for="lastname2">Mật khẩu</label>
+          <input id="lastname2" type="text"
+          class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full"
+          formControlName="password"
+          >
+          <div *ngIf="updateForm.get('password')?.invalid && (updateForm.get('password')?.dirty || updateForm.get('password')?.touched)" class="text-danger">Mật khẩu không được để trống</div>
+      </div>
+  </div>
+  <div class="formgrid grid">
+    <div class="field col">
+        <label for="firstname2">Tên quản trị viên</label>
+        <input id="firstname2" type="text"
+         class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full"
+         formControlName="name"
+         >
+         <div *ngIf="updateForm.get('name')?.invalid && (updateForm.get('name')?.dirty || updateForm.get('name')?.touched)" class="text-danger">Tên quản trị viên không được để trống</div>
+    </div>
+</div>
+<div class="flex flex-row-reverse flex-wrap gap-2">
+  <p-button
+    label="Hủy"
+    (onClick)="closeModal('create')"
+    severity="danger"
+  ></p-button>
+  <p-button
+  type="sub"
+  label="Thêm"
+  ></p-button>
+
+</div>
+  </form>
+  </div>
+</p-dialog>
