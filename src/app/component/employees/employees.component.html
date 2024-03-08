@@ -1,1 +1,157 @@
-<h1>Trang quản lí nhân viên</h1>
+<div class="box">
+  <div class="head m-3">
+    <h1>Quản lí nhân viên</h1>
+  </div>
+  <div class="button m-3 surface-50">
+    <p-button class="m-2 max-w-5rem min-w-5rem" label="Thêm"></p-button>
+    <p-button
+      label="Xóa"
+      class="max-w-5rem min-w-5rem"
+      (onClick)="onCheckboxChange(seletedEmployee)"
+      severity="danger"
+    ></p-button>
+  </div>
+  <div class="table m-3">
+    <p-table
+      #dt
+      [value]="Employees"
+      [globalFilterFields]="[
+      'departmentId',
+      'empName',
+      'address',
+      'birthday',
+      'gender',
+      'email',
+      'timeStartWork',
+      'timeEndWork',
+      'salary',
+      'note',
+      'role',
+      'createdBy',
+      'createdAt',
+      'empStatus']"
+      [(selection)]="seletedEmployee"
+      [rows]="10"
+      [paginator]="true"
+      [rowsPerPageOptions]="[10, 25, 50]"
+      [showCurrentPageReport]="true"
+      currentPageReportTemplate="Hiện {first} đến  {last}  của tổng {totalRecords} bản ghi"
+    >
+      <ng-template pTemplate="caption">
+        <div class="flex">
+          <span class="p-input-icon-left ml-auto">
+            <i class="pi pi-search"></i>
+            <input
+              pInputText
+              type="text"
+              (input)="dt.filterGlobal($any($event.target).value, 'contains')"
+              placeholder="Nhập vào"
+            />
+          </span>
+        </div>
+      </ng-template>
+      <ng-template pTemplate="header">
+        <tr>
+          <th style="width: 3rem"></th>
+          <th>Tên nhân viên</th>
+          <th>Địa chỉ</th>
+          <th>Ngày sinh</th>
+          <th>Giới tính</th>
+          <th>Email</th>
+          <th>Ngày bắt đầu làm việc</th>
+          <th>Ngày kết thúc làm việc</th>
+          <th>Lương</th>
+          <th>Ghi chú</th>
+          <th>Chức vụ</th>
+          <th>Trạng thái</th>
+          <th>Phòng ban</th>
+          <th style="width: 12rem">Thao tác</th>
+        </tr>
+        <tr>
+          <th>
+            <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+          </th>
+          <th>
+            <p-columnFilter type="text" field="empName"></p-columnFilter>
+          </th>
+          <th>
+            <p-columnFilter type="text" field="address"></p-columnFilter>
+          </th>
+          <th>
+            <p-columnFilter type="text" field="birthday"></p-columnFilter>
+          </th>
+          <th>
+            <p-columnFilter type="text" field="gender"></p-columnFilter>
+          </th>
+          <th>
+            <p-columnFilter type="text" field="email"></p-columnFilter>
+          </th>
+          <th>
+            <p-columnFilter type="text" field="timeStartWork"></p-columnFilter>
+          </th>
+          <th>
+            <p-columnFilter type="text" field="timeEndWork"></p-columnFilter>
+          </th>
+          <th>
+            <p-columnFilter type="text" field="salary"></p-columnFilter>
+          </th>
+          <th>
+            <p-columnFilter type="text" field="note"></p-columnFilter>
+          </th>
+          <th>
+            <p-columnFilter type="text" field="role"></p-columnFilter>
+          </th>
+          <th>
+            <p-columnFilter type="text" field="empStatus"></p-columnFilter>
+          </th>
+          <th>
+            <p-columnFilter type="text" field="departmentId"></p-columnFilter>
+          </th>
+          <th></th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-employee>
+        <tr>
+          <td>
+            <p-tableCheckbox [value]="employee"></p-tableCheckbox>
+          </td>
+          <td>{{ employee.empName}}</td>
+          <td>{{ employee.address }}</td>
+          <th>{{employee.birthday}}</th>
+          <th>{{employee.gender}}</th>
+          <th>{{employee.email}}</th>
+          <th>{{employee.timeStartWork}}</th>
+          <th>{{employee.timeEndWork}}</th>
+          <th>{{employee.salary}}</th>
+          <th>{{employee.note}}</th>
+          <th>{{employee.role}}</th>
+          <th>{{employee.empStatus}}</th>
+          <th>{{employee.departmentId}}</th>
+          <td class="flex flex-wrap">
+            <button
+              pButton
+              type="button"
+              (click)="viewEmployee(employee)"
+              class="p-button-primary col m-1"
+              icon="pi pi-eye"
+            ></button>
+            <button
+              pButton
+              type="button"
+              (click)="UpdateEmployee(employee)"
+              class="p-button-secondary col m-1"
+              icon="pi pi-cog"
+            ></button>
+            <button
+              pButton
+              type="button"
+              (click)="deleteEmployee(employee)"
+              class="p-button-danger col m-1"
+              icon="pi pi-trash"
+            ></button>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+</div>
