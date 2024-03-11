@@ -1,5 +1,9 @@
 import { AdminService } from './../../services/admin.services';
 import { Component, OnInit, ViewChild } from '@angular/core';
+import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { NgIf } from '@angular/common';
+import { catchError, throwError } from 'rxjs';
+
 import { ButtonModule } from 'primeng/button';
 import{TableModule} from 'primeng/table'
 import { InputTextModule } from 'primeng/inputtext';
@@ -11,9 +15,9 @@ import {ContextMenuModule} from 'primeng/contextmenu';
 import {ToastModule} from 'primeng/toast';
 import {ProgressBarModule} from 'primeng/progressbar';
 import {DropdownModule} from 'primeng/dropdown';
-import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule, NgModel } from '@angular/forms';
-import { NgIf } from '@angular/common';
-import { catchError, throwError } from 'rxjs';
+import { Admin } from '../../models/admin';
+
+
 
 @Component({
   selector: 'app-admin',
@@ -22,6 +26,7 @@ import { catchError, throwError } from 'rxjs';
     ReactiveFormsModule,
     FormsModule,
     NgIf,
+
     ButtonModule,
     TableModule,
     InputTextModule,
@@ -41,7 +46,7 @@ import { catchError, throwError } from 'rxjs';
   styleUrls: ['./admin.component.css']
 })
 export class AdminComponent implements OnInit {
-  selectedAdmin : any[] = [];
+  selectedAdmin : Admin[] = [];
   value : string = '';
   admins: any[] = [];
 
@@ -100,6 +105,8 @@ export class AdminComponent implements OnInit {
           console.log('Admin đã được tạo mới:', response);
           this.closeModal('create');
           this.getAdmin()
+          this.createForm.reset();
+
         },
         error: (error) => {
           console.error('Đã xảy ra lỗi khi tạo mới admin:', error);
@@ -113,7 +120,7 @@ export class AdminComponent implements OnInit {
       const formData = this.updateForm.value
       this._adminServices.updateAdmin(this.updateID,formData).subscribe({
         next: (res) =>{
-          console.log('admin đã được tạo mới:', res);
+          console.log('admin đã được cập nhập:', res);
           this.closeModal('update')
           this.getAdmin()
         },
@@ -133,7 +140,14 @@ export class AdminComponent implements OnInit {
 
   onCheckboxChange(e:any) {
     const ids = e.map((i:any) => i.id);
-    console.log(ids)
+    console.log(ids);
+    this._adminServices.deleteMultiple(ids).subscribe({
+      next:() => {
+        console.log('thực hiện xóa nhiều thành công:')
+        this.getAdmin()
+      },
+      error: (err) => console.error('đã xảy ra lỗi khi cập nhập admin', err)
+    })
   }
   viewAdmin(data:any){
     const id: number = data.id

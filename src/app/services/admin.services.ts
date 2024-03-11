@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable, of } from 'rxjs';
+import { Observable, catchError, of, throwError } from 'rxjs';
 import { Admin } from '../models/admin';
 
 @Injectable({
@@ -35,5 +35,15 @@ export class AdminService {
   // Hàm gọi API để xóa một admin
   deleteAdmin(id: number): Observable<any> {
     return this.http.delete(`${this.baseUrl}/${id}`, { responseType: 'text' });
+  }
+  //Xóa nhiều admin dựa theo mảng id
+  deleteMultiple(ids: number[]): Observable<any> {
+    return this.http.delete(`${this.baseUrl}/deleteMultiple`, { body: ids })
+      .pipe(
+        catchError(error => {
+          console.error('Failed to delete objects:', error);
+          throw new Error('Failed to delete objects');
+        })
+      );
   }
 }

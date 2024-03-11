@@ -1,7 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
+import { LocalStorageService } from './services/localStorage.services';
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -11,4 +12,13 @@ import { ButtonModule } from 'primeng/button';
 })
 export class AppComponent {
   title = 'app-manager-emloyes';
+  constructor(
+    private _router : Router,
+    private _localStorageServices: LocalStorageService,
+
+  ) {}
+
+  logout(): void{
+    this._localStorageServices.removeItem('user')
+  }
 }
